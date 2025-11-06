@@ -1,0 +1,45 @@
+
+package com.example;
+import com.example.config.AppConfig;
+import com.example.dao.StudentDAO;
+import com.example.model.Student;
+import com.example.model.Course;
+import com.example.service.FeeService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import java.util.List;
+import java.util.Scanner;
+
+public class MainApp {
+public static void main(String[] args) {
+AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
+StudentDAO dao = ctx.getBean(StudentDAO.class);
+FeeService feeService = ctx.getBean(FeeService.class);
+Scanner sc = new Scanner(System.in);
+
+while (true) {
+System.out.println("1.Add 2.View 3.Delete 4.PayFee 5.Refund 6.Exit");
+int ch = sc.nextInt();
+if (ch == 1) {
+Student s = new Student();
+s.setName(sc.next());
+s.setBalance(10000);
+Course c = new Course();
+c.setCourseName("Java");
+c.setDuration(3);
+s.setCourse(c);
+dao.saveStudent(s);
+} else if (ch == 2) {
+List<Student> list = dao.getAllStudents();
+for (Student s : list)
+System.out.println(s.getStudentId() + " " + s.getName() + " " + s.getBalance());
+} else if (ch == 3) {
+dao.deleteStudent(sc.nextInt());
+} else if (ch == 4) {
+feeService.payFee(sc.nextInt(), sc.nextDouble());
+} else if (ch == 5) {
+feeService.refundFee(sc.nextInt(), sc.nextDouble());
+} else break;
+}
+ctx.close();
+}
+}

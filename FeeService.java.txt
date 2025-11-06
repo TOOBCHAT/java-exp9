@@ -1,0 +1,27 @@
+
+package com.example.service;
+import com.example.dao.StudentDAO;
+import com.example.model.Student;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class FeeService {
+@Autowired
+private StudentDAO studentDAO;
+
+@Transactional
+public void payFee(int studentId, double amount) {
+Student s = studentDAO.getStudent(studentId);
+s.setBalance(s.getBalance() - amount);
+studentDAO.saveStudent(s);
+}
+
+@Transactional
+public void refundFee(int studentId, double amount) {
+Student s = studentDAO.getStudent(studentId);
+s.setBalance(s.getBalance() + amount);
+studentDAO.saveStudent(s);
+}
+}
